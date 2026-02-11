@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NARIÑO OSCURO - La Verdad Detrás del Apagón</title>
+    <meta name="description" content="Investigación ciudadana sobre el desvío de recursos de CEDENAR hacia campañas políticas de Erick Velasco, García Realpe y Gustavo García.">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Courier+Prime:wght@400;700&family=Oswald:wght@300;500;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'war-black': '#0a0a0a',
+                        'war-dark': '#111111',
+                        'war-red': '#ff0000',
+                        'war-dim-red': '#8a0000',
+                        'war-yellow': '#fbbf24',
+                        'war-gray': '#2a2a2a'
+                    },
+                    fontFamily: {
+                        'stencil': ['Black Ops One', 'cursive'],
+                        'display': ['Oswald', 'sans-serif'],
+                        'mono': ['Courier Prime', 'monospace'],
+                    },
+                    animation: {
+                        'pulse-fast': 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'glitch': 'glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite',
+                    },
+                    keyframes: {
+                        glitch: {
+                            '0%': { transform: 'translate(0)' },
+                            '20%': { transform: 'translate(-2px, 2px)' },
+                            '40%': { transform: 'translate(-2px, -2px)' },
+                            '60%': { transform: 'translate(2px, 2px)' },
+                            '80%': { transform: 'translate(2px, -2px)' },
+                            '100%': { transform: 'translate(0)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+    <style>
+        body {
+            background-color: #050505;
+            color: #e5e5e5;
+            cursor: crosshair; /* Cursor de mira para efecto agresivo */
+        }
+
+        /* Efecto de ruido estático de fondo */
+        .static-noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0.04;
+            background: url('https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif');
+        }
+
+        /* Texto censurado (Redacted) */
+        .redacted {
+            background-color: white;
+            color: black;
+            padding: 0 4px;
+            font-weight: bold;
+        }
+        
+        .censored-block {
+            background: black;
+            color: black;
+            user-select: none;
+        }
+        .censored-block:hover {
+            color: white;
+            background: #ff0000;
+            cursor: help;
+        }
+
+        /* Estilo de documento filtrado */
+        .secret-file {
+            background-image: repeating-linear-gradient(45deg, #111 25%, transparent 25%, transparent 75%, #111 75%, #111), repeating-linear-gradient(45deg, #111 25%, #0a0a0a 25%, #0a0a0a 75%, #111 75%, #111);
+            background-position: 0 0, 10px 10px;
+            background-size: 20px 20px;
+        }
+
+        /* Botón de pánico */
+        .hazard-stripe {
+            background: repeating-linear-gradient(
+                45deg,
+                #000,
+                #000 10px,
+                #ff0000 10px,
+                #ff0000 20px
+            );
+        }
+    </style>
+</head>
+<body class="font-mono antialiased overflow-x-hidden">
+
+    <div class="static-noise"></div>
+
+    <div id="intro-overlay" class="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center cursor-pointer" onclick="this.style.display='none'">
+        <h1 class="text-war-red font-stencil text-4xl md:text-6xl animate-pulse text-center px-4">ACCESO A ARCHIVOS RESTRINGIDOS</h1>
+        <p class="text-white mt-4 font-mono text-sm blinking">Haz click para desencriptar la verdad...</p>
+        <div class="mt-8 text-xs text-gray-500 max-w-md text-center">
+            ADVERTENCIA: Este sitio contiene evidencia sobre el uso de recursos públicos de CEDENAR para fines políticos.
+        </div>
+    </div>
+
+    <nav class="fixed w-full z-40 bg-black/95 backdrop-blur border-b border-war-red/30 shadow-[0_4px_20px_rgba(255,0,0,0.2)]">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-2 group cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <span class="font-stencil text-xl md:text-2xl text-white tracking-widest group-hover:text-war-red transition-colors">
+                        NARIÑO<span class="text-war-red group-hover:text-white">///</span>OSCURO
+                    </span>
+                </div>
+
+                <div class="hidden lg:flex space-x-6 text-[10px] uppercase font-bold tracking-widest text-gray-400">
+                    <a href="#triangulo" class="hover:text-white hover:bg-war-red/20 px-2 py-1 transition flex items-center gap-1">
+                        <span class="text-war-red">01.</span> La Trama
+                    </a>
+                    <a href="#modus" class="hover:text-white hover:bg-war-red/20 px-2 py-1 transition flex items-center gap-1">
+                        <span class="text-war-red">02.</span> El Robo
+                    </a>
+                    <a href="#objetivos" class="hover:text-white hover:bg-war-red/20 px-2 py-1 transition flex items-center gap-1">
+                        <span class="text-war-red">03.</span> Culpables
+                    </a>
+                    <a href="#testimonios" class="hover:text-white hover:bg-war-red/20 px-2 py-1 transition flex items-center gap-1">
+                        <span class="text-war-red">04.</span> Víctimas
+                    </a>
+                    <a href="#guerrilla" class="bg-war-red text-black px-3 py-1 hover:bg-white transition shadow-[2px_2px_0px_white]">
+                        DESCARGAR KIT
+                    </a>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <div class="hidden md:flex flex-col items-end leading-none">
+                        <span class="text-[9px] text-gray-500 font-mono">ESTADO DEL SISTEMA</span>
+                        <span class="text-[10px] text-war-red font-bold blinking">BAJO ATAQUE</span>
+                    </div>
+                    <div class="relative">
+                        <span class="absolute top-0 right-0 w-3 h-3 rounded-full bg-war-red animate-ping opacity-75"></span>
+                        <span class="relative block w-3 h-3 rounded-full bg-war-red"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="lg:hidden flex justify-between py-2 border-t border-gray-800 text-[9px] font-mono text-gray-400 overflow-x-auto whitespace-nowrap px-1 gap-4">
+                <a href="#triangulo" class="hover:text-white">LA TRAMA</a>
+                <a href="#modus" class="hover:text-white">EL ROBO</a>
+                <a href="#objetivos" class="hover:text-white">CULPABLES</a>
+                <a href="#guerrilla" class="text-war-red font-bold">KIT DIGITAL</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="relative min-h-screen flex items-center pt-16 bg-war-black">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/dark-matter.png')] opacity-30"></div>
+        
+        <div class="max-w-6xl mx-auto px-4 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+                <div class="inline-block bg-war-red text-black px-2 py-1 text-xs font-bold mb-4 transform -rotate-2">
+                    EXPEDIENTE #CEDENAR-2026
+                </div>
+                <h1 class="font-display text-6xl md:text-8xl font-bold text-white leading-[0.9] mb-6">
+                    LA CAJA MENOR <br> DE LA <span class="text-war-red text-stroke">CAMPAÑA</span>
+                </h1>
+                
+                <p class="text-lg text-gray-400 mb-8 leading-relaxed border-l-4 border-war-red pl-6">
+                    Mientras en tu casa se va la luz y la factura sube, en los directorios políticos de <span class="text-white font-bold border-b border-war-red">Erick Velasco</span> y <span class="text-white font-bold border-b border-war-red">Los García</span> la energía sobra. 
+                    <br><br>
+                    No es ineficiencia técnica. <strong>Es saqueo sistemático.</strong>
+                </p>
+
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="#objetivos" class="bg-war-red text-black font-stencil text-lg px-8 py-4 text-center hover:bg-white hover:scale-105 transition-transform shadow-[0_0_15px_rgba(255,0,0,0.5)]">
+                        VER A LOS RESPONSABLES
+                    </a>
+                    <a href="#votacion" class="border border-gray-600 text-gray-300 px-8 py-4 text-center hover:border-white hover:text-white transition-colors uppercase font-bold text-xs tracking-widest flex items-center justify-center">
+                        Emitir Juicio Ciudadano
+                    </a>
+                </div>
+            </div>
+
+            <div class="bg-war-dark border border-gray-800 p-8 relative overflow-hidden group hover:border-war-red transition-colors">
+                <div class="absolute top-0 right-0 p-2 opacity-20 group-hover:opacity-100 transition-opacity">
+                    <svg class="w-12 h-12 text-war-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <h3 class="text-gray-500 text-xs font-bold uppercase tracking-widest mb-2">TIEMPO SIN RESPUESTAS</h3>
+                <div class="flex items-baseline gap-2">
+                    <span class="text-6xl font-stencil text-white" id="daysCounter">00</span>
+                    <span class="text-xl text-war-red">Días</span>
+                </div>
+                <p class="text-sm text-gray-400 mt-4">
+                    Han pasado desde que se exigió públicamente explicar la relación entre los contratos de Cedenar y sus campañas.
+                    <br>
+                    <span class="text-white font-bold block mt-2">¿Su respuesta? Silencio.</span>
+                </p>
+            </div>
+        </div>
+    </header>
+
+    <section id="triangulo" class="py-24 bg-war-dark border-y border-gray-800 relative">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="font-stencil text-4xl text-white uppercase tracking-wider">LA RUTA DEL RECURSO</h2>
+                <p class="text-gray-500 mt-2">Cómo presuntamente convierten tu factura en votos</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center relative">
+                <div class="hidden md:block absolute top-1/2 left-0 w-full h-1 bg-gray-800 -z-0"></div>
+                
+                <div class="bg-black border border-gray-700 p-8 relative z-10 hover:border-war-red transition-all transform hover:-translate-y-2">
+                    <div class="w-16 h-16 mx-auto bg-gray-800 rounded-full flex items-center justify-center mb-4 text-3xl">🧾</div>
+                    <h3 class="text-xl font-display font-bold text-white mb-2">1. EL COBRO</h3>
+                    <p class="text-sm text-gray-400">Cedenar aumenta tarifas y justifica "costos operativos" o "pérdidas". El ciudadano paga o le cortan la luz.</p>
+                </div>
+
+                <div class="bg-black border border-gray-700 p-8 relative z-10 hover:border-war-red transition-all transform hover:-translate-y-2 shadow-[0_0_30px_rgba(255,0,0,0.1)]">
+                    <div class="w-16 h-16 mx-auto bg-war-red rounded-full flex items-center justify-center mb-4 text-3xl animate-pulse">🤝</div>
+                    <h3 class="text-xl font-display font-bold text-war-red mb-2">2. EL CONTRATO</h3>
+                    <p class="text-sm text-gray-400">Se generan contratos de "mantenimiento" o "publicidad" que se entregan a dedo a empresas aliadas a las campañas.</p>
+                </div>
+
+                <div class="bg-black border border-gray-700 p-8 relative z-10 hover:border-war-red transition-all transform hover:-translate-y-2">
+                    <div class="w-16 h-16 mx-auto bg-gray-800 rounded-full flex items-center justify-center mb-4 text-3xl">🗳️</div>
+                    <h3 class="text-xl font-display font-bold text-white mb-2">3. LA CAMPAÑA</h3>
+                    <p class="text-sm text-gray-400">El dinero retorna como financiación de campaña, logística o puestos burocráticos para pagar favores (Votos).</p>
+                </div>
+            </div>
+            
+            <div class="mt-12 text-center bg-war-red/10 border border-war-red/30 p-4 rounded">
+                <p class="text-war-red font-bold uppercase text-sm">
+                    RESULTADO: Servicio pésimo para ti, campaña millonaria para ellos.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="modus" class="py-24 bg-black border-y border-war-red/20 relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10" style="background-image: linear-gradient(#333 1px, transparent 1px), linear-gradient(90deg, #333 1px, transparent 1px); background-size: 40px 40px;"></div>
+
+        <div class="max-w-7xl mx-auto px-4 relative z-10">
+            <h2 class="font-stencil text-4xl text-white mb-12 text-right">EL MODUS OPERANDI <span class="text-war-red text-6xl block">004-B</span></h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="space-y-8">
+                    <div class="flex gap-4 group">
+                        <div class="text-4xl font-bold text-gray-700 group-hover:text-war-red transition">01.</div>
+                        <div>
+                            <h3 class="text-white font-display text-xl uppercase mb-1 group-hover:translate-x-2 transition-transform">Sobrecostos Invisibles</h3>
+                            <p class="text-gray-500 text-sm font-mono">Compran transformadores a precio de oro. El papel dice $50M, el mercado dice $12M. La diferencia ($38M) desaparece.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 group">
+                        <div class="text-4xl font-bold text-gray-700 group-hover:text-war-red transition">02.</div>
+                        <div>
+                            <h3 class="text-white font-display text-xl uppercase mb-1 group-hover:translate-x-2 transition-transform">Nómina Fantasma</h3>
+                            <p class="text-gray-500 text-sm font-mono">Contratan "asesores" que nunca van a la oficina. Son líderes barriales pagados por CEDENAR para hacer campaña política.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 group">
+                        <div class="text-4xl font-bold text-gray-700 group-hover:text-war-red transition">03.</div>
+                        <div>
+                            <h3 class="text-white font-display text-xl uppercase mb-1 group-hover:translate-x-2 transition-transform">Sabotaje Controlado</h3>
+                            <p class="text-gray-500 text-sm font-mono">Cortan la luz en zonas estratégicas para luego aparecer como "salvadores" gestionando la reconexión a cambio de votos.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-900 border border-gray-700 p-6 rotate-2 hover:rotate-0 transition-transform duration-500 shadow-[10px_10px_0px_rgba(255,0,0,0.2)]">
+                    <div class="flex justify-between items-center text-xs font-mono text-gray-400 mb-4 border-b border-gray-700 pb-2">
+                        <span>FLUJO DE CAJA: PROYECTO X</span>
+                        <span class="text-war-red animate-pulse">● DESVIADO</span>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-white text-sm mb-1">
+                                <span>Presupuesto Asignado</span>
+                                <span>100%</span>
+                            </div>
+                            <div class="h-2 bg-gray-700"><div class="h-full bg-white w-full"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-white text-sm mb-1">
+                                <span>Materiales Reales</span>
+                                <span>30%</span>
+                            </div>
+                            <div class="h-2 bg-gray-700"><div class="h-full bg-gray-500 w-[30%]"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-war-red font-bold text-sm mb-1">
+                                <span>"Gastos Administrativos" (Campaña)</span>
+                                <span>70%</span>
+                            </div>
+                            <div class="h-2 bg-gray-700"><div class="h-full bg-war-red w-[70%] animate-pulse"></div></div>
+                        </div>
+                    </div>
+                    <div class="mt-6 text-center">
+                        <button class="border border-white text-white text-[10px] uppercase px-4 py-2 hover:bg-white hover:text-black transition">Ver Documentos Anexos</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="cronologia" class="py-24 bg-black relative">
+        <div class="max-w-5xl mx-auto px-4">
+            <h2 class="font-stencil text-4xl text-white mb-12 text-center border-b border-gray-800 pb-4">CRONOLOGÍA DEL CAOS</h2>
+            
+            <div class="relative border-l-2 border-war-red ml-4 md:ml-0 md:pl-0 space-y-12">
+                <div class="relative md:grid md:grid-cols-5 items-center pl-8 md:pl-0">
+                    <div class="hidden md:block col-span-2 text-right pr-8 text-war-red font-mono font-bold">ENE 2024</div>
+                    <div class="absolute md:static left-0 top-2 w-4 h-4 bg-war-red rounded-full md:mx-auto border-4 border-black -ml-[9px] md:ml-0"></div>
+                    <div class="col-span-2 pl-4 md:pl-8">
+                        <span class="md:hidden text-war-red font-mono font-bold text-xs">ENE 2024</span>
+                        <h3 class="text-white font-display text-xl">Cambio de Gerencia</h3>
+                        <p class="text-gray-500 text-sm mt-1">Llegan fichas claves cercanas a la campaña de Velasco a la junta directiva.</p>
+                    </div>
+                </div>
+
+                <div class="relative md:grid md:grid-cols-5 items-center pl-8 md:pl-0">
+                    <div class="hidden md:block col-span-2 text-right pr-8 text-war-red font-mono font-bold">JUN 2024</div>
+                    <div class="absolute md:static left-0 top-2 w-4 h-4 bg-war-red rounded-full md:mx-auto border-4 border-black -ml-[9px] md:ml-0"></div>
+                    <div class="col-span-2 pl-4 md:pl-8">
+                        <span class="md:hidden text-war-red font-mono font-bold text-xs">JUN 2024</span>
+                        <h3 class="text-white font-display text-xl">Contrato 004-B</h3>
+                        <p class="text-gray-500 text-sm mt-1">Se firma contrato de publicidad por $2.000M con empresa sin experiencia en energía.</p>
+                    </div>
+                </div>
+
+                <div class="relative md:grid md:grid-cols-5 items-center pl-8 md:pl-0">
+                    <div class="hidden md:block col-span-2 text-right pr-8 text-war-red font-mono font-bold">HOY</div>
+                    <div class="absolute md:static left-0 top-2 w-4 h-4 bg-white animate-pulse rounded-full md:mx-auto border-4 border-black -ml-[9px] md:ml-0"></div>
+                    <div class="col-span-2 pl-4 md:pl-8">
+                        <span class="md:hidden text-white animate-pulse font-mono font-bold text-xs">HOY</span>
+                        <h3 class="text-white font-display text-xl">Apagón General</h3>
+                        <p class="text-gray-500 text-sm mt-1">Tarifas suben 30% mientras el servicio colapsa en barrios populares.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="objetivos" class="py-24 bg-war-black relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-64 h-64 border-r-2 border-t-2 border-war-red opacity-20 rounded-tr-3xl"></div>
+        <div class="absolute bottom-0 left-0 w-64 h-64 border-l-2 border-b-2 border-war-red opacity-20 rounded-bl-3xl"></div>
+
+        <div class="max-w-7xl mx-auto px-4 relative z-10">
+            <h2 class="font-stencil text-5xl text-white mb-12 text-center text-stroke">LOS RESPONSABLES DEL SILENCIO</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <div class="bg-war-dark border-2 border-gray-800 p-6 relative group hover:border-war-red transition-all">
+                    <div class="absolute top-4 right-4 text-war-red font-bold text-xs border border-war-red px-2 py-1 rotate-12 group-hover:rotate-0 transition-transform">
+                        BAJO LA LUPA
+                    </div>
+                    
+                    <div class="flex flex-col items-center mb-6">
+                        <div class="w-32 h-32 bg-gray-900 rounded-full flex items-center justify-center border-4 border-gray-800 mb-4 overflow-hidden relative grayscale group-hover:grayscale-0 transition-all">
+                             <svg class="w-20 h-20 text-gray-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+                             <div class="absolute inset-0 bg-war-red mix-blend-overlay opacity-0 group-hover:opacity-50 transition-opacity"></div>
+                        </div>
+                        <h3 class="text-2xl font-display font-bold text-white uppercase">Erick Velasco</h3>
+                        <span class="text-xs font-mono text-gray-500">REPRESENTANTE A LA CÁMARA</span>
+                    </div>
+
+                    <div class="space-y-4 mb-8">
+                        <div class="bg-black p-3 border-l-2 border-war-red">
+                            <h4 class="text-xs font-bold text-war-red uppercase">Alegación Principal:</h4>
+                            <p class="text-sm text-gray-400">Presunta injerencia en la contratación de Cedenar para fortalecer su estructura política en Pasto.</p>
+                        </div>
+                        <div class="bg-black p-3 border-l-2 border-war-yellow">
+                            <h4 class="text-xs font-bold text-war-yellow uppercase">Estado:</h4>
+                            <p class="text-sm text-gray-400">Sin pronunciamiento oficial ante las pruebas.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-2">
+                        <a href="https://x.com/eravelasco" target="_blank" class="bg-gray-800 hover:bg-black text-center py-2 text-xs font-bold text-white uppercase transition-colors flex flex-col items-center">
+                            <span class="text-lg">𝕏</span> <span class="text-[10px] mt-1">Exigir</span>
+                        </a>
+                        <a href="https://www.facebook.com/erickvelascocamara" target="_blank" class="bg-gray-800 hover:bg-[#1877F2] hover:text-white text-center py-2 text-xs font-bold text-gray-300 uppercase transition-colors flex flex-col items-center">
+                            <span class="text-lg">f</span> <span class="text-[10px] mt-1">Comentar</span>
+                        </a>
+                        <a href="https://www.tiktok.com/@eravelas" target="_blank" class="bg-gray-800 hover:bg-[#00f2ea] hover:text-black text-center py-2 text-xs font-bold text-gray-300 uppercase transition-colors flex flex-col items-center">
+                            <span class="text-lg">♪</span> <span class="text-[10px] mt-1">Ver</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="bg-war-dark border-2 border-gray-800 p-6 relative group hover:border-war-red transition-all">
+                    <div class="absolute top-4 right-4 text-war-red font-bold text-xs border border-war-red px-2 py-1 rotate-12 group-hover:rotate-0 transition-transform">
+                        PADRINAZGO
+                    </div>
+                    
+                    <div class="flex flex-col items-center mb-6">
+                        <div class="w-32 h-32 bg-gray-900 rounded-full flex items-center justify-center border-4 border-gray-800 mb-4 overflow-hidden relative grayscale group-hover:grayscale-0 transition-all">
+                             <svg class="w-20 h-20 text-gray-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+                             <div class="absolute inset-0 bg-war-red mix-blend-overlay opacity-0 group-hover:opacity-50 transition-opacity"></div>
+                        </div>
+                        <h3 class="text-2xl font-display font-bold text-white uppercase">Guillermo García</h3>
+                        <span class="text-xs font-mono text-gray-500">EX SENADOR</span>
+                    </div>
+
+                    <div class="space-y-4 mb-8">
+                        <div class="bg-black p-3 border-l-2 border-war-red">
+                            <h4 class="text-xs font-bold text-war-red uppercase">Alegación Principal:</h4>
+                            <p class="text-sm text-gray-400">Señalado como el cerebro político detrás del manejo burocrático de la entidad para mantener el poder regional.</p>
+                        </div>
+                        <div class="bg-black p-3 border-l-2 border-war-yellow">
+                            <h4 class="text-xs font-bold text-war-yellow uppercase">Estado:</h4>
+                            <p class="text-sm text-gray-400">Opera desde la sombra. Requiere visibilidad pública.</p>
+                        </div>
+                    </div>
+
+                    <div class="w-full">
+                        <a href="https://www.facebook.com/GuillermoGarciaRealpe/?locale=es_LA" target="_blank" class="block bg-gray-800 hover:bg-[#1877F2] hover:text-white text-center py-3 text-xs font-bold text-gray-300 uppercase transition-colors">
+                            FACEBOOK: EXIGIR CLARIDAD
+                        </a>
+                    </div>
+                </div>
+
+                <div class="bg-war-dark border-2 border-gray-800 p-6 relative group hover:border-war-red transition-all">
+                    
+                    <div class="flex flex-col items-center mb-6">
+                        <div class="w-32 h-32 bg-gray-900 rounded-full flex items-center justify-center border-4 border-gray-800 mb-4 overflow-hidden relative grayscale group-hover:grayscale-0 transition-all">
+                             <svg class="w-20 h-20 text-gray-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+                             <div class="absolute inset-0 bg-war-red mix-blend-overlay opacity-0 group-hover:opacity-50 transition-opacity"></div>
+                        </div>
+                        <h3 class="text-2xl font-display font-bold text-white uppercase">Gustavo García</h3>
+                        <span class="text-xs font-mono text-gray-500">FIGURA PÚBLICA</span>
+                    </div>
+
+                    <div class="space-y-4 mb-8">
+                        <div class="bg-black p-3 border-l-2 border-war-red">
+                            <h4 class="text-xs font-bold text-war-red uppercase">Alegación Principal:</h4>
+                            <p class="text-sm text-gray-400">Aparece vinculado a las actuaciones recientes. Su silencio valida las sospechas de la ciudadanía.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2">
+                        <a href="https://x.com/GustavoGarcia_F" target="_blank" class="bg-gray-800 hover:bg-black text-center py-2 text-xs font-bold text-white uppercase transition-colors flex flex-col items-center">
+                            <span class="text-lg">𝕏</span> <span class="text-[10px] mt-1">Escribir</span>
+                        </a>
+                        <a href="https://www.facebook.com/garciagust" target="_blank" class="bg-gray-800 hover:bg-[#1877F2] hover:text-white text-center py-2 text-xs font-bold text-gray-300 uppercase transition-colors flex flex-col items-center">
+                            <span class="text-lg">f</span> <span class="text-[10px] mt-1">Escribir</span>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="boveda" class="py-24 bg-war-dark border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-8">
+                <div>
+                    <h2 class="font-stencil text-4xl text-white">EVIDENCIA FILTRADA</h2>
+                    <p class="text-gray-500 text-sm font-mono mt-2">Documentos recuperados de la papelera de reciclaje.</p>
+                </div>
+                <div class="text-war-red animate-pulse font-mono text-xs border border-war-red px-2 py-1 mt-4 md:mt-0">
+                    [ ESTADO: CLASIFICADO ]
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-black border border-gray-700 p-4 hover:border-war-red cursor-pointer transition group">
+                    <div class="flex justify-between items-start mb-4 opacity-50 group-hover:opacity-100">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        <span class="text-[10px] text-war-red font-bold">PDF</span>
+                    </div>
+                    <p class="text-gray-400 text-xs font-mono mb-1">Contrato_Publicidad.pdf</p>
+                    <div class="w-full bg-gray-800 h-1 mt-2">
+                        <div class="bg-war-red w-3/4 h-full"></div>
+                    </div>
+                    <span class="text-[9px] text-gray-600 block mt-1">Descargando 75%...</span>
+                </div>
+
+                <div class="bg-black border border-gray-700 p-4 hover:border-war-red cursor-pointer transition group">
+                    <div class="flex justify-between items-start mb-4 opacity-50 group-hover:opacity-100">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+                        <span class="text-[10px] text-war-red font-bold">AUDIO</span>
+                    </div>
+                    <p class="text-gray-400 text-xs font-mono mb-1">Audio_Reunion_Junta.mp3</p>
+                    <div class="w-full bg-gray-800 h-1 mt-2">
+                        <div class="bg-war-red w-1/4 h-full"></div>
+                    </div>
+                    <span class="text-[9px] text-gray-600 block mt-1">Error de Red</span>
+                </div>
+                <div class="bg-black border border-gray-700 p-4 hover:border-war-red cursor-pointer transition group">
+                    <div class="flex justify-between items-start mb-4 opacity-50 group-hover:opacity-100">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                        <span class="text-[10px] text-war-red font-bold">XLS</span>
+                    </div>
+                    <p class="text-gray-400 text-xs font-mono mb-1">Nomina_Paralela_2025.xls</p>
+                    <div class="w-full bg-gray-800 h-1 mt-2">
+                        <div class="bg-war-red w-full h-full"></div>
+                    </div>
+                    <span class="text-[9px] text-gray-600 block mt-1">Encriptado</span>
+                </div>
+                
+                <div class="bg-war-red/10 border border-war-red p-4 flex flex-col justify-center items-center text-center">
+                    <p class="text-war-red font-bold text-sm uppercase mb-2">¿Tienes Pruebas?</p>
+                    <button class="bg-war-red text-black text-xs font-bold px-4 py-2 hover:bg-white transition">SUBIR ARCHIVO SEGURO</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="votacion" class="py-20 bg-war-dim-red relative border-y-4 border-black">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h2 class="font-stencil text-4xl text-white mb-8 shadow-black drop-shadow-lg">TRIBUNAL CIUDADANO</h2>
+            <p class="text-white/80 mb-8 font-mono text-sm max-w-2xl mx-auto">
+                Si la justicia ordinaria se demora, la sanción social debe ser inmediata. ¿Crees que estas personas están usando a CEDENAR para su beneficio propio?
+            </p>
+
+            <div class="bg-black p-8 shadow-2xl border-4 border-white/10 max-w-lg mx-auto transform -rotate-1">
+                <h3 class="text-war-red font-bold text-2xl mb-6 font-display">¿SON CULPABLES?</h3>
+                
+                <div class="flex gap-4 justify-center mb-6">
+                    <button onclick="vote('guilty')" id="btnGuilty" class="w-1/2 py-4 bg-gray-800 hover:bg-war-red text-white font-bold uppercase transition-all border border-gray-600 hover:border-white">
+                        SÍ, SON CULPABLES
+                    </button>
+                    <button onclick="vote('innocent')" id="btnInnocent" class="w-1/2 py-4 bg-gray-800 hover:bg-blue-600 text-white font-bold uppercase transition-all border border-gray-600 hover:border-white">
+                        NO, SON INOCENTES
+                    </button>
+                </div>
+
+                <div id="results" class="hidden space-y-4">
+                    <div>
+                        <div class="flex justify-between text-xs text-white mb-1">
+                            <span>CULPABLES</span>
+                            <span id="guiltyPercent">98%</span>
+                        </div>
+                        <div class="w-full bg-gray-800 h-4">
+                            <div class="bg-war-red h-full" style="width: 98%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-xs text-white mb-1">
+                            <span>INOCENTES</span>
+                            <span id="innocentPercent">2%</span>
+                        </div>
+                        <div class="w-full bg-gray-800 h-4">
+                            <div class="bg-blue-500 h-full" style="width: 2%"></div>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-4">Votos registrados hoy: <span id="totalVotes">1,402</span></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="testimonios" class="py-24 bg-war-dark relative">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="font-stencil text-4xl text-white mb-12 text-center">VOCES APAGADAS</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-black p-8 border-l-4 border-war-red relative">
+                    <span class="absolute top-4 right-4 text-6xl text-gray-800 font-serif">"</span>
+                    <p class="text-gray-300 italic mb-6 relative z-10">
+                        Tenía 300 pollos en la incubadora. Se fue la luz 8 horas sin aviso. **Se murieron todos.** Fui a reclamar y me dijeron que llenara un formulario. Perdí mi inversión de todo el año.
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center font-bold text-gray-500">?</div>
+                        <div>
+                            <p class="text-white font-bold text-sm">Carlos M.</p>
+                            <p class="text-war-red text-xs font-mono">Campesino, Corregimiento Obonuco</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-black p-8 border-l-4 border-white relative mt-8 md:mt-0">
+                    <span class="absolute top-4 right-4 text-6xl text-gray-800 font-serif">"</span>
+                    <p class="text-gray-300 italic mb-6 relative z-10">
+                        Mi mamá es oxigenodependiente. Cada vez que parpadea la luz, nos da pánico. **¿A Velasco se le va la luz en su apartamento de Bogotá?** No creo. Aquí jugamos con la vida.
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center font-bold text-gray-500">?</div>
+                        <div>
+                            <p class="text-white font-bold text-sm">Ana Lucía P.</p>
+                            <p class="text-war-red text-xs font-mono">Barrio El Pilar</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-black p-8 border-l-4 border-war-yellow relative md:mt-16">
+                    <span class="absolute top-4 right-4 text-6xl text-gray-800 font-serif">"</span>
+                    <p class="text-gray-300 italic mb-6 relative z-10">
+                        Se me quemó la nevera del negocio. Cedenar dice que fue "fuerza mayor". La fuerza mayor se llama corrupción. **Están saqueando la empresa.**
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center font-bold text-gray-500">?</div>
+                        <div>
+                            <p class="text-white font-bold text-sm">Roberto S.</p>
+                            <p class="text-war-red text-xs font-mono">Tienda de Barrio</
